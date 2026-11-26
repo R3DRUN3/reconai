@@ -18,6 +18,7 @@
   - [Quick start](#quick-start)
   - [API](#api)
     - [API Examples](#api-examples)
+  - [Report Example](#report-example)
   - [Configuration](#configuration)
 
 
@@ -129,6 +130,81 @@ curl -s -H "Authorization: Bearer $KEY" $API/scans/$ID/report
 # Full JSON saved to a file
 curl -s -H "Authorization: Bearer $KEY" $API/scans/$ID > scan-$ID.json
 ```  
+
+## Report Example  
+```txt
+# WAPT Assessment — exampletarget.io
+
+## Scope
+- Target: `https://exampletarget.io`
+- Only the original host was tested. No exploitation or DoS was performed.
+
+## Methodology
+1. `httpx` — initial HTTP probe (status, server, technology).
+2. `wafw00f` — WAF detection.
+3. `whatweb` (aggression 3) — technology fingerprinting.
+4. `curl` — manual inspection of responses, headers, and common sensitive paths (`/web.config`, `/elmah.axd`, `/trace.axd`, `/robots.txt`, `/User/Login`).
+5. `testssl` — TLS protocols, certificate, headers, ciphers, and vulnerabilities.
+6. `nuclei` — exposure, misconfiguration, technology, IIS/ASP.NET, header, and SSL templates.
+7. `gobuster` — attempted directory enumeration (failed: TLS verification error on HTTPS; timeout on HTTP).
+
+## Key observations
+- The host runs **Microsoft IIS 8.5 / ASP.NET MVC**, with .NET Framework 4.0.30319 and ASP.NET 4.8.4797.0.
+- **Every request returns HTTP 500** with a verbose ASP.NET error page. The exception occurs in a global request handler, so the application is unavailable and no application content is reachable.
+- **No WAF was detected** by wafw00f’s generic detection.
+- TLS: only TLS 1.2/1.3 offered, but the **certificate chain is incomplete** and standard clients fail verification.
+- HTTP (port 80) does not respond (connection timeout); only HTTPS is served.
+
+## Findings
+
+### 1. No Web Application Firewall detected — Medium
+wafw00f found no WAF in front of the host. The application appears directly exposed to internet traffic without a detected WAF.
+
+[+] Generic Detection results:
+[-] No WAF detected by the generic detection
+
+### 2. ASP.NET verbose error messages enabled (customErrors mode=Off) — Medium
+Full stack traces are returned to remote clients, disclosing the internal app name, developer username, local source path and line number.
+
+*SupplyNetWebApp.MvcApplication.Application_PreRequestHandlerExecute(Object sender, EventArgs args) in C:\Users\john.doe\source\repos\DemoApp\DemoWebApp\Global.asax.cs:71*
+This error page might contain sensitive information because ASP.NET is configured to show verbose error messages using <customErrors mode="Off"/>.
+
+
+### 3. Application globally unavailable (HTTP 500 on every request) — Medium
+`/`, `/User/Login`, `/User/Login?ReturnUrl=%2f` and `/trace.axd` all return the same 500 / `System.ArgumentNullException`. This is an availability problem and blocked deeper application testing.
+
+### 4. TLS certificate chain incomplete — Low
+
+Chain of trust               NOT ok (chain incomplete)
+Certificates provided        1
+curl: (60) SSL certificate OpenSSL verify result: unable to get local issuer certificate (20)
+
+
+### 5. Missing HTTP security headers — Low
+No HSTS, CSP, X-Content-Type-Options, Referrer-Policy, Permissions-Policy or cross-origin policies.
+
+### 6. Server/technology version disclosure — Info
+`Server: Microsoft-IIS/8.5`, `X-AspNet-Version: 4.0.30319`, `X-Powered-By: ASP.NET` (IIS 8.5 is EOL).
+
+### 7. Obsolete CBC ciphers / LUCKY13 potentially vulnerable — Info
+
+Obsoleted CBC ciphers (AES, ARIA etc.)         offered
+LUCKY13 (CVE-2013-0169), experimental     potentially VULNERABLE
+
+
+## Remediation summary
+- Deploy a WAF in blocking mode.
+- Set `customErrors mode="RemoteOnly"` and stop returning stack traces.
+- Fix the null-reference bug in `Global.asax.cs:71` and add robust exception handling.
+- Install the full TLS certificate chain; disable CBC ciphers and prefer AEAD suites.
+- Add HSTS and the other missing security headers; suppress version-revealing headers; plan an upgrade off EOL IIS 8.5.
+
+## Limitations
+- The application is globally broken (500 on all requests), so no authenticated or functional application testing was possible.
+- `gobuster` could not run: HTTPS failed TLS verification and HTTP timed out. Directory/file enumeration was therefore not completed; only a small set of manually chosen paths was checked.
+- No WPScan (not WordPress). Nuclei ran only non-intrusive community templates.
+- The certificate was inspected with TLS verification bypassed for HTTP response inspection only; the certificate remains untrusted.%     
+```
 
 
 ## Configuration
