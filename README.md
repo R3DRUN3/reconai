@@ -4,7 +4,7 @@
 ![Red Team Badge](https://img.shields.io/badge/Team-Red-red)  ![Blue Team Badge](https://img.shields.io/badge/Team-Blue-blue)  
 
 
-<img src="./media/logo.png" width="220" alt="ReconAI Logo">  
+<img src="./media/logo.png" width="220" alt="reconai Logo">  
 
 
 
@@ -13,7 +13,7 @@
 - [reconai](#reconai)
   - [Table of Contents](#table-of-contents)
   - [Abstract](#abstract)
-  - [Why this is *not* an exploitation framework](#why-this-is-not-an-exploitation-framework)
+  - [Why this is *not* an Agentic Offensive Framework](#why-this-is-not-an-agentic-offensive-framework)
   - [Use cases](#use-cases)
   - [Quick start](#quick-start)
   - [API](#api)
@@ -23,18 +23,18 @@
 
 ## Abstract  
 
-ReconAI is a small Kali container with an API and an LLM agent inside.   
+reconai is a small Kali container with an API and an LLM agent inside.   
 You POST a target, the agent runs a handful of recon tools **you** chose (nuclei, gobuster, wpscan, nmap...), and you get back a JSON result with a written report.  
 That's it.  
 
 > [!WARNING]  
 > **Only scan assets you own or are explicitly authorised to test**.
 
-## Why this is *not* an exploitation framework
+## Why this is *not* an Agentic Offensive Framework  
 
-Autonomous pentest agents give an LLM a shell and a mission. reconai gives it a simple **menu**.
+AOFs give an LLM a shell, sub-agents, graphs, loops and a mission. reconai gives it a simple **menu**.  
 
-| | Exploitation frameworks | reconai |
+| | AOFs | reconai |
 |---|---|---|
 | Shell access for the LLM | Yes | **No**. Only allow-listed tools run |
 |Complex multi-agent loops and graphs| Yes | **No**. Single agent with limited calls |
@@ -43,7 +43,7 @@ Autonomous pentest agents give an LLM a shell and a mission. reconai gives it a 
 | Scope | "Please stay in scope" | **Enforced in code** on every call, including redirects |
 | Goal | Get in | **Look and report** |
 
-Even a prompt-injected or confused model can't scan outside scope or run anything you didn't enable.
+reconai is much more limited, but also much safer to run, than Agentic Offensive Frameworks.   
 
 ## Use cases
 
@@ -55,11 +55,11 @@ Even a prompt-injected or confused model can't scan outside scope or run anythin
 
 ## Quick start  
 
-ReconAI works with any OpenAI-compatible API that supports tool calling (OpenAI, Azure Foundry, vLLM, Ollama, LiteLLM...).  
+reconai works with any OpenAI-compatible API that supports tool calling (OpenAI, Azure Foundry, vLLM, Ollama, LiteLLM...).  
 Run the tool via docker:  
 
 ```bash
-cp .env.example .env     # set RECONAI_LLM_*, RECONAI_API_KEY, RECONAI_TOOLS
+cp .env.example .env     # set reconai_LLM_*, reconai_API_KEY, reconai_TOOLS
 
 docker run -d \
   --name reconai \
@@ -93,7 +93,7 @@ Now go to [API Examples](#api-examples).
 ### API Examples  
 ```bash
 export API=http://localhost:9889
-export KEY=$(grep ^RECONAI_API_KEY .env | cut -d= -f2)
+export KEY=$(grep ^reconai_API_KEY .env | cut -d= -f2)
 ```  
 
 ```bash
@@ -138,13 +138,13 @@ curl -s -H "Authorization: Bearer $KEY" $API/scans/$ID > scan-$ID.json
 
 | Variable | Default | |
 |---|---|---|
-| `RECONAI_LLM_BASE_URL`, `_API_KEY`, `_MODEL` | OpenAI | your LLM |
-| `RECONAI_API_KEY` | required | bearer key for this API |
-| `RECONAI_TOOLS` | `nuclei,gobuster,wpscan,nmap` | what the agent may use |
-| `RECONAI_SCOPE_ALLOWLIST` | empty | only accept targets inside these domains/CIDRs |
-| `RECONAI_MAX_CONCURRENT_SCANS` | 3 | parallel scans |
-| `RECONAI_MAX_STEPS` | 20 | LLM calls per scan |
-| `RECONAI_TOOL_TIMEOUT` | 600 | seconds per tool run |
+| `reconai_LLM_BASE_URL`, `_API_KEY`, `_MODEL` | OpenAI | your LLM |
+| `reconai_API_KEY` | required | bearer key for this API |
+| `reconai_TOOLS` | `nuclei,gobuster,wpscan,nmap` | what the agent may use |
+| `reconai_SCOPE_ALLOWLIST` | empty | only accept targets inside these domains/CIDRs |
+| `reconai_MAX_CONCURRENT_SCANS` | 3 | parallel scans |
+| `reconai_MAX_STEPS` | 20 | LLM calls per scan |
+| `reconai_TOOL_TIMEOUT` | 600 | seconds per tool run |
 
 
 
