@@ -25,8 +25,7 @@
 ## Abstract  
 
 reconai is a small Kali container with an API and an LLM agent inside.   
-You POST a target, the agent runs a handful of recon tools **you** chose (nuclei, gobuster, wpscan, nmap...), and you get back a JSON result with a written report.  
-That's it.  
+You POST a target, the agent runs a handful of authorized tools against the target, and you get back a JSON result with a written report.  
 
 > [!WARNING]  
 > **Only scan assets you own or are explicitly authorised to test**.
