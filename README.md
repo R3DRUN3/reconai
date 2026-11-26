@@ -1,5 +1,7 @@
 # reconai  
 
+ <img src="./media/logo.png" width="220" alt="ReconAI Logo">
+
 ```bash
 export API=http://localhost:9889
 export KEY=$(grep ^RECONAI_API_KEY .env | cut -d= -f2)
