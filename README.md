@@ -18,7 +18,6 @@
   - [API](#api)
     - [API Examples](#api-examples)
   - [Configuration](#configuration)
-  - [License](#license)
 
 
 ## Abstract  
@@ -132,11 +131,6 @@ curl -s -H "Authorization: Bearer $KEY" $API/scans/$ID > scan-$ID.json
 ```  
 
 
-
-```
-
-`tool_runs` is a full audit trail of every command the agent ran, or tried to run and was refused.
-
 ## Configuration
 
 | Variable | Default | |
@@ -150,10 +144,6 @@ curl -s -H "Authorization: Bearer $KEY" $API/scans/$ID > scan-$ID.json
 | `RECONAI_TOOL_TIMEOUT` | 600 | seconds per tool run |
 
 
-
-## License
-
-MIT. Be nice, scan only what's yours. 🙂
 
 
 
