@@ -48,7 +48,7 @@ Even a prompt-injected or confused model can't scan outside scope or run anythin
 
 - 🔁 **Continuous perimeter checks**: cron or CI posts your domains every night and diffs the reports
 - 🤖 **Programmatic lightweight scans**: one HTTP call instead of a pile of tool wrappers
-- 🚦 **Triage**: "what's actually exposed on this new subdomain?" in minutes
+- 🚦 **Triage and Compliance**: "what's actually exposed on this new subdomain?" in minutes
 - 📦 **Batch**: submit up to 50 scans at once, they run concurrently
 - 🛡️ **Safe automation**: let non-experts trigger scans without handing them a shell
 
@@ -131,8 +131,6 @@ curl -s -H "Authorization: Bearer $KEY" $API/scans/$ID | jq '.tool_runs[] | {id,
 curl -s -H "Authorization: Bearer $KEY" $API/scans/$ID > scan-$ID.json
 ```  
 
-Multiple Scans:  
-Use POST /scans/batch with {"scans":[{...},{...}]} (max 50 per request). They run concurrently, up to RECONAI_MAX_CONCURRENT_SCANS (default 3), and the rest queue. You can also just call POST /scans multiple times.  
 
 
 ```
