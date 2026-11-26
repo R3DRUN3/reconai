@@ -42,6 +42,7 @@ class Settings:
     nuclei_rate_limit: int = 50
     gobuster_wordlist: str = "/usr/share/dirb/wordlists/common.txt"
     wpscan_api_token: str = ""
+    httpx_binary: str = "httpx-toolkit"  # Kali ships ProjectDiscovery httpx under this name
 
     @classmethod
     def from_env(cls, env: dict[str, str] | None = None) -> "Settings":
@@ -68,4 +69,5 @@ class Settings:
             nuclei_rate_limit=int(e.get("RECONAI_NUCLEI_RATE_LIMIT", d.nuclei_rate_limit)),
             gobuster_wordlist=e.get("RECONAI_GOBUSTER_WORDLIST", d.gobuster_wordlist),
             wpscan_api_token=e.get("WPSCAN_API_TOKEN", ""),
+            httpx_binary=e.get("RECONAI_HTTPX_BINARY", d.httpx_binary),
         )

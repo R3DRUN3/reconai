@@ -3,6 +3,22 @@
 <img src="./media/logo.png" width="220" alt="ReconAI Logo">  
 
 
+## Table of Contents
+
+- [reconai](#reconai)
+  - [Table of Contents](#table-of-contents)
+  - [Abstract](#abstract)
+  - [Why this is *not* an exploitation framework](#why-this-is-not-an-exploitation-framework)
+  - [Use cases](#use-cases)
+  - [Quick start](#quick-start)
+  - [API](#api)
+    - [API Examples](#api-examples)
+  - [Configuration](#configuration)
+  - [License](#license)
+
+
+## Abstract  
+
 ReconAI is a small Kali container with an LLM agent inside.  
 You POST a target, the agent runs a handful of recon tools **you** chose (nuclei, gobuster, wpscan, nmap...), and you get back a JSON result with a written report.  
 That's it.  
@@ -65,56 +81,7 @@ curl -s -H "Authorization: Bearer $KEY" localhost:9889/scans/<id>/report
 | `DELETE` | `/scans/{id}` | cancel |
 | `GET` | `/tools`, `/health` | enabled tools, liveness |
 
-`targets` is the scope: domains (subdomains included), IPs, CIDRs up to /24, or http(s) URLs.
-
-## What you get back
-```jsonc
-{
-  "scan_id": "3f2a9c1d7b10",
-  "status": "completed",            // queued | running | completed | failed | cancelled
-  "risk_rating": "low",
-  "summary": "...",
-  "findings": [{"title": "...", "severity": "low", "evidence": "...", "recommendation": "..."}],
-  "report": "# Full Markdown report ...",
-  "tool_runs": [{"tool": "nmap", "argv": ["nmap", "..."], "status": "ok", "output": "..."}]
-}
-```
-
-`tool_runs` is a full audit trail of every command the agent ran, or tried to run and was refused.
-
-## Configuration
-
-| Variable | Default | |
-|---|---|---|
-| `RECONAI_LLM_BASE_URL`, `_API_KEY`, `_MODEL` | OpenAI | your LLM |
-| `RECONAI_API_KEY` | required | bearer key for this API |
-| `RECONAI_TOOLS` | `nuclei,gobuster,wpscan,nmap` | what the agent may use |
-| `RECONAI_SCOPE_ALLOWLIST` | empty | only accept targets inside these domains/CIDRs |
-| `RECONAI_MAX_CONCURRENT_SCANS` | 3 | parallel scans |
-| `RECONAI_MAX_STEPS` | 15 | LLM calls per scan |
-| `RECONAI_TOOL_TIMEOUT` | 600 | seconds per tool run |
-
-## Add a tool in ~10 lines
-```python
-class WhatWeb(Tool):
-    name = "whatweb"; binary = "whatweb"; target_kind = "url"
-    description = "Fingerprint web technologies of ONE http(s) URL."
-    parameters = {"type": "object", "properties": {"target": {"type": "string"}},
-                  "required": ["target"], "additionalProperties": False}
-    def build_argv(self, args):
-        return [self.binary, "--color=never", args["target"]]
-```
-
-Register it in `tools/__init__.py`, install it in the Dockerfile, add it to `RECONAI_TOOLS`. Validation, scope checks, timeouts and auditing come for free.
-
-
-## License
-
-MIT. Be nice, scan only what's yours. 🙂
-
-
-
-
+### API Examples  
 ```bash
 export API=http://localhost:9889
 export KEY=$(grep ^RECONAI_API_KEY .env | cut -d= -f2)
@@ -124,8 +91,8 @@ export KEY=$(grep ^RECONAI_API_KEY .env | cut -d= -f2)
 ID=$(curl -s -X POST $API/scans \
   -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
   -d '{
-    "targets": ["sassi.it"],
-    "tools": ["nuclei", "gobuster", "wpscan"],
+    "targets": ["exampletarget.com"],
+    "tools": ["nuclei", "gobuster", "wpscan", "wafw00f", "whatweb", "httpx"],
     "objective": "Light perimeter check: open ports, web technology, exposed files or directories, obvious misconfigurations and vulnerabilities",
     "max_steps": 10,
     "metadata": {"note": "first PoC test"}
@@ -162,6 +129,34 @@ curl -s -H "Authorization: Bearer $KEY" $API/scans/$ID > scan-$ID.json
 
 Multiple Scans:  
 Use POST /scans/batch with {"scans":[{...},{...}]} (max 50 per request). They run concurrently, up to RECONAI_MAX_CONCURRENT_SCANS (default 3), and the rest queue. You can also just call POST /scans multiple times.  
+
+
+```
+
+`tool_runs` is a full audit trail of every command the agent ran, or tried to run and was refused.
+
+## Configuration
+
+| Variable | Default | |
+|---|---|---|
+| `RECONAI_LLM_BASE_URL`, `_API_KEY`, `_MODEL` | OpenAI | your LLM |
+| `RECONAI_API_KEY` | required | bearer key for this API |
+| `RECONAI_TOOLS` | `nuclei,gobuster,wpscan,nmap` | what the agent may use |
+| `RECONAI_SCOPE_ALLOWLIST` | empty | only accept targets inside these domains/CIDRs |
+| `RECONAI_MAX_CONCURRENT_SCANS` | 3 | parallel scans |
+| `RECONAI_MAX_STEPS` | 15 | LLM calls per scan |
+| `RECONAI_TOOL_TIMEOUT` | 600 | seconds per tool run |
+
+
+
+## License
+
+MIT. Be nice, scan only what's yours. 🙂
+
+
+
+
+
 
 
 

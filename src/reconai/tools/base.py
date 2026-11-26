@@ -115,6 +115,9 @@ def _check(name: str, v: Any, spec: dict[str, Any]) -> None:
             raise ToolArgError(f"{name}: must be an integer")
         if not spec.get("minimum", v) <= v <= spec.get("maximum", v):
             raise ToolArgError(f"{name}: out of range [{spec.get('minimum')}, {spec.get('maximum')}]")
+    elif t == "boolean":
+        if not isinstance(v, bool):
+            raise ToolArgError(f"{name}: must be true or false")
     elif t == "array":
         if not isinstance(v, list) or len(v) > spec.get("maxItems", 20):
             raise ToolArgError(f"{name}: must be an array")

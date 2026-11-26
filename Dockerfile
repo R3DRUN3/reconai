@@ -4,12 +4,14 @@ ENV DEBIAN_FRONTEND=noninteractive PYTHONUNBUFFERED=1
 
 # Recon tools. Add more here when you add a tool plugin.
 # dirb provides /usr/share/dirb/wordlists/common.txt (used by gobuster).
+# httpx-toolkit = ProjectDiscovery httpx (binary name: httpx-toolkit).
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
       python3 python3-venv python3-pip ca-certificates \
-      nuclei gobuster wpscan nmap dirb \
+      nuclei gobuster wpscan nmap dirb whatweb httpx-toolkit wafw00f \
  && rm -rf /var/lib/apt/lists/* \
- && test -f /usr/share/dirb/wordlists/common.txt
+ && test -f /usr/share/dirb/wordlists/common.txt \
+ && command -v whatweb httpx-toolkit wafw00f
 
 # Unprivileged runtime user (all built-in tools work without root / raw sockets).
 RUN useradd --create-home --uid 10001 reconai && mkdir /data && chown reconai /data
