@@ -101,7 +101,7 @@ ID=$(curl -s -X POST $API/scans \
   -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
   -d '{
     "targets": ["exampletarget.com"],
-    "tools": ["nuclei", "gobuster", "wpscan", "wafw00f", "whatweb", "httpx"],
+    "tools": ["nuclei", "gobuster", "wpscan", "wafw00f", "whatweb", "httpx", "testssl", "curl"],
     "objective": "Light perimeter check: open ports, web technology, exposed files or directories, obvious misconfigurations and vulnerabilities",
     "max_steps": 30,
     "metadata": {"note": "first PoC test"}
@@ -117,17 +117,14 @@ watch -n 5 "curl -s -H 'Authorization: Bearer $KEY' $API/scans/$ID | jq '{status
 
 Read the result:  
 ```bash
+# What is actually running (exact commands, status, output)
+curl -s -H "Authorization: Bearer $KEY" $API/scans/$ID | jq '.tool_runs[] | {id,tool,status,exit_code,argv,output}'
+
 # Summary and findings
 curl -s -H "Authorization: Bearer $KEY" $API/scans/$ID | jq '{status,risk_rating,summary,findings,usage,error}'
 
-
 # Report as Markdown
 curl -s -H "Authorization: Bearer $KEY" $API/scans/$ID/report
-
-
-# What actually ran (exact commands, status, output)
-curl -s -H "Authorization: Bearer $KEY" $API/scans/$ID | jq '.tool_runs[] | {id,tool,status,exit_code,argv,output}'
-
 
 # Full JSON saved to a file
 curl -s -H "Authorization: Bearer $KEY" $API/scans/$ID > scan-$ID.json

@@ -6,6 +6,7 @@ import shutil
 
 from ..config import Settings
 from .base import Tool, ToolArgError  # noqa: F401
+from .curl_tool import Curl
 from .gobuster import Gobuster
 from .httpx_probe import HttpxProbe
 from .nmap import Nmap
@@ -18,7 +19,18 @@ from .wpscan import WPScan
 log = logging.getLogger("reconai.tools")
 
 BUILTIN_TOOLS: dict[str, type[Tool]] = {
-    c.name: c for c in (Nuclei, Gobuster, WPScan, Nmap, WhatWeb, HttpxProbe, Wafw00f, Testssl)
+    c.name: c
+    for c in (
+        Nuclei,
+        Gobuster,
+        WPScan,
+        Nmap,
+        WhatWeb,
+        HttpxProbe,
+        Wafw00f,
+        Testssl,
+        Curl,
+    )
 }
 
 
@@ -42,8 +54,11 @@ class Registry:
         return len(self._tools)
 
 
-def build_registry(settings: Settings, available: dict[str, type[Tool]] | None = None,
-                   check_binaries: bool = True) -> Registry:
+def build_registry(
+    settings: Settings,
+    available: dict[str, type[Tool]] | None = None,
+    check_binaries: bool = True,
+) -> Registry:
     """Instantiate the tools enabled via RECONAI_TOOLS (fails fast on unknown names).
 
     A tool whose binary is missing or whose preflight() fails is skipped with a warning.
@@ -51,19 +66,26 @@ def build_registry(settings: Settings, available: dict[str, type[Tool]] | None =
     available = available or BUILTIN_TOOLS
     unknown = [n for n in settings.enabled_tools if n not in available]
     if unknown:
-        raise ValueError(f"Unknown tool(s) in RECONAI_TOOLS: {unknown}. Available: {sorted(available)}")
+        raise ValueError(
+            f"Unknown tool(s) in RECONAI_TOOLS: {unknown}. Available: {sorted(available)}"
+        )
+
     tools: list[Tool] = []
     for n in settings.enabled_tools:
-        t = available[n](settings)
+        tool = available[n](settings)
         if check_binaries:
-            if shutil.which(t.binary) is None:
-                log.warning("Tool %r disabled: binary %r not found in PATH", n, t.binary)
+            if shutil.which(tool.binary) is None:
+                log.warning("Tool %r disabled: binary %r not found in PATH", n, tool.binary)
                 continue
-            problem = t.preflight()
+
+            problem = tool.preflight()
             if problem:
                 log.warning("Tool %r disabled: %s", n, problem)
                 continue
-        tools.append(t)
+
+        tools.append(tool)
+
     if not tools:
         raise ValueError("No usable tools. Check RECONAI_TOOLS and that the binaries are installed.")
+
     return Registry(tools)
