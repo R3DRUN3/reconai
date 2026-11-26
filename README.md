@@ -7,8 +7,8 @@ ReconAI is a small Kali container with an LLM agent inside.
 You POST a target, the agent runs a handful of recon tools **you** chose (nuclei, gobuster, wpscan, nmap...), and you get back a JSON result with a written report.  
 That's it.  
 
-> **WARNING**  
-> Only scan assets you own or are explicitly authorised to test.
+> [!WARNING]  
+> **Only scan assets you own or are explicitly authorised to test**.
 
 ## Why this is *not* an exploitation framework
 
