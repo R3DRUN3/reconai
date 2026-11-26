@@ -43,8 +43,10 @@ AOFs give an LLM a shell, sub-agents, graphs, loops and a mission. reconai gives
 | Exploitation / brute force | Part of the job | **Not possible**. Tools run with non-intrusive flags |
 | Scope | "Please stay in scope" | **Enforced in code** on every call, including redirects |
 | Goal | Get in | **Look and report** |
+| Scan Duration | Hours or Days | **Minutes** |
 
-reconai is much more limited, but also much safer to run, than Agentic Offensive Frameworks.   
+reconai is much more limited, but also much safer and faster to run than Agentic Offensive Frameworks.  
+The main rationale behind it is to find low-hanging fruit quickly, at scale, and at minimal cost.  
 
 ## Use cases
 
