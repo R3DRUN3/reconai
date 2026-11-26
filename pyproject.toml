@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "reconai"
-version = "0.0.1"
+version = "0.0.2"
 description = "Controlled, agentic perimeter recon: an LLM agent that can only call an allow-listed set of recon tools."
 readme = "README.md"
-license = { text = "MIT" }
+license = { text = "Unlicense" }
 requires-python = ">=3.10"
 dependencies = ["aiohttp>=3.9", "pydantic>=2.5"]
 
