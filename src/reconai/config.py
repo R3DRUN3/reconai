@@ -33,7 +33,7 @@ class Settings:
     scope_allowlist: list[str] = field(default_factory=list)
     max_concurrent_scans: int = 3
     max_queued_scans: int = 100
-    max_steps: int = 20
+    max_steps: int = 15
     tool_timeout: int = 600
     max_tool_output_chars: int = 12000   # what the LLM sees per tool call
     max_capture_bytes: int = 2_000_000   # what we keep from a process at most
@@ -43,6 +43,7 @@ class Settings:
     gobuster_wordlist: str = "/usr/share/dirb/wordlists/common.txt"
     wpscan_api_token: str = ""
     httpx_binary: str = "httpx-toolkit"  # Kali ships ProjectDiscovery httpx under this name
+    testssl_binary: str = ""             # empty = auto-detect testssl.sh / testssl
 
     @classmethod
     def from_env(cls, env: dict[str, str] | None = None) -> "Settings":
@@ -70,4 +71,5 @@ class Settings:
             gobuster_wordlist=e.get("RECONAI_GOBUSTER_WORDLIST", d.gobuster_wordlist),
             wpscan_api_token=e.get("WPSCAN_API_TOKEN", ""),
             httpx_binary=e.get("RECONAI_HTTPX_BINARY", d.httpx_binary),
+            testssl_binary=e.get("RECONAI_TESTSSL_BINARY", d.testssl_binary),
         )

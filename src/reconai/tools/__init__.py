@@ -10,6 +10,7 @@ from .gobuster import Gobuster
 from .httpx_probe import HttpxProbe
 from .nmap import Nmap
 from .nuclei import Nuclei
+from .testssl import Testssl
 from .wafw00f import Wafw00f
 from .whatweb import WhatWeb
 from .wpscan import WPScan
@@ -17,7 +18,7 @@ from .wpscan import WPScan
 log = logging.getLogger("reconai.tools")
 
 BUILTIN_TOOLS: dict[str, type[Tool]] = {
-    c.name: c for c in (Nuclei, Gobuster, WPScan, Nmap, WhatWeb, HttpxProbe, Wafw00f)
+    c.name: c for c in (Nuclei, Gobuster, WPScan, Nmap, WhatWeb, HttpxProbe, Wafw00f, Testssl)
 }
 
 
