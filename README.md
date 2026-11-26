@@ -103,7 +103,7 @@ ID=$(curl -s -X POST $API/scans \
     "targets": ["exampletarget.com"],
     "tools": ["nuclei", "gobuster", "wpscan", "wafw00f", "whatweb", "httpx"],
     "objective": "Light perimeter check: open ports, web technology, exposed files or directories, obvious misconfigurations and vulnerabilities",
-    "max_steps": 10,
+    "max_steps": 30,
     "metadata": {"note": "first PoC test"}
   }' | jq -r .scan_id)
 echo "scan id: $ID"
@@ -143,7 +143,7 @@ curl -s -H "Authorization: Bearer $KEY" $API/scans/$ID > scan-$ID.json
 | `reconai_TOOLS` | `nuclei,gobuster,wpscan,nmap` | what the agent may use |
 | `reconai_SCOPE_ALLOWLIST` | empty | only accept targets inside these domains/CIDRs |
 | `reconai_MAX_CONCURRENT_SCANS` | 3 | parallel scans |
-| `reconai_MAX_STEPS` | 20 | LLM calls per scan |
+| `reconai_MAX_STEPS` | 30 | LLM calls per scan |
 | `reconai_TOOL_TIMEOUT` | 600 | seconds per tool run |
 
 

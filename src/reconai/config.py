@@ -33,7 +33,7 @@ class Settings:
     scope_allowlist: list[str] = field(default_factory=list)
     max_concurrent_scans: int = 3
     max_queued_scans: int = 100
-    max_steps: int = 15
+    max_steps: int = 30
     tool_timeout: int = 600
     max_tool_output_chars: int = 12000   # what the LLM sees per tool call
     max_capture_bytes: int = 2_000_000   # what we keep from a process at most
