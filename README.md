@@ -1,6 +1,10 @@
 # reconai  
 
+[![License: Unlicense](https://img.shields.io/badge/license-unlicense-blue.svg)](http://unlicense.org/)  ![Red Team Badge](https://img.shields.io/badge/Team-Red-red)  ![Blue Team Badge](https://img.shields.io/badge/Team-Blue-blue)  
+
+
 <img src="./media/logo.png" width="220" alt="ReconAI Logo">  
+
 
 
 ## Table of Contents
