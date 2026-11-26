@@ -1,0 +1,19 @@
+services:
+  reconai:
+    image: ghcr.io/YOUR_GITHUB_USERNAME/reconai:v0.1.0
+    env_file:
+      - .env
+    ports:
+      - "127.0.0.1:9889:9889"
+    volumes:
+      - reconai-data:/data
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp
+    restart: unless-stopped
+
+volumes:
+  reconai-data:
