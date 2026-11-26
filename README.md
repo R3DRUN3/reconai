@@ -144,7 +144,7 @@ Use POST /scans/batch with {"scans":[{...},{...}]} (max 50 per request). They ru
 | `RECONAI_TOOLS` | `nuclei,gobuster,wpscan,nmap` | what the agent may use |
 | `RECONAI_SCOPE_ALLOWLIST` | empty | only accept targets inside these domains/CIDRs |
 | `RECONAI_MAX_CONCURRENT_SCANS` | 3 | parallel scans |
-| `RECONAI_MAX_STEPS` | 15 | LLM calls per scan |
+| `RECONAI_MAX_STEPS` | 20 | LLM calls per scan |
 | `RECONAI_TOOL_TIMEOUT` | 600 | seconds per tool run |
 
 
