@@ -37,6 +37,7 @@ Autonomous pentest agents give an LLM a shell and a mission. reconai gives it a 
 | | Exploitation frameworks | reconai |
 |---|---|---|
 | Shell access for the LLM | Yes | **No**. Only allow-listed tools run |
+|Complex multi-agent loops and graphs| Yes | **No**. Single agent with limited calls |
 | What the LLM controls | Any command | Validated parameters of tools you enabled |
 | Exploitation / brute force | Part of the job | **Not possible**. Tools run with non-intrusive flags |
 | Scope | "Please stay in scope" | **Enforced in code** on every call, including redirects |
@@ -52,28 +53,32 @@ Even a prompt-injected or confused model can't scan outside scope or run anythin
 - 📦 **Batch**: submit up to 50 scans at once, they run concurrently
 - 🛡️ **Safe automation**: let non-experts trigger scans without handing them a shell
 
-## Quick start
+## Quick start  
+
+ReconAI works with any OpenAI-compatible API that supports tool calling (OpenAI, Azure Foundry, vLLM, Ollama, LiteLLM...).  
+Run the tool via docker:  
+
 ```bash
 cp .env.example .env     # set RECONAI_LLM_*, RECONAI_API_KEY, RECONAI_TOOLS
-docker compose up --build -d
-```
 
-Works with any OpenAI-compatible API that supports tool calling (OpenAI, Azure, vLLM, Ollama, LiteLLM...).
-```bash
-KEY=your-api-key
+docker run -d \
+  --name reconai \
+  --restart unless-stopped \
+  --env-file .env \
+  -p 127.0.0.1:9889:9889 \
+  --mount type=volume,source=reconai-data,target=/data \
+  --cap-drop=ALL \
+  --security-opt=no-new-privileges \
+  --tmpfs /tmp \
+  ghcr.io/r3drun3/reconai:v0.0.2
 
-# submit a scan
-curl -s -X POST localhost:9889/scans -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
-  -d '{"targets":["example.com"],"tools":["nmap","nuclei"],"max_steps":10}'
+sleep 3
+docker logs reconai 
+curl http://localhost:9889/health 
+```    
 
-# batch: many scans at once
-curl -s -X POST localhost:9889/scans/batch -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
-  -d '{"scans":[{"targets":["a.example.com"]},{"targets":["203.0.113.0/28"],"tools":["nmap"]}]}'
+Now go to [API Examples](#api-examples).    
 
-# get the result / the report
-curl -s -H "Authorization: Bearer $KEY" localhost:9889/scans/<id>
-curl -s -H "Authorization: Bearer $KEY" localhost:9889/scans/<id>/report
-```
 
 ## API
 
@@ -104,9 +109,6 @@ ID=$(curl -s -X POST $API/scans \
 echo "scan id: $ID"
 ```  
 
-```bash
-docker compose logs -f reconai
-```  
 
 Poll the status. It goes queued, then running, then completed or failed:  
 ```bash
