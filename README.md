@@ -54,7 +54,7 @@ The main rationale behind it is to find low-hanging fruit quickly, at scale, and
 - 🤖 **Programmatic lightweight scans**: one HTTP call instead of a pile of tool wrappers
 - 🚦 **Triage and Compliance**: "what's actually exposed on this new subdomain?" in minutes
 - 📦 **Batch**: submit up to 50 scans at once, they run concurrently
-- 🛡️ **Safe automation**: let non-experts trigger scans without handing them a shell
+- 🛡️ **Safe automation**: leverage AI capabilities with bounded agency
 
 ## Quick start  
 
