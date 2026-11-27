@@ -94,10 +94,15 @@ Now go to [API Examples](#api-examples).
 | `GET` | `/tools`, `/health` | enabled tools, liveness |
 
 ### API Examples  
+
+Export API Key and endpoint:  
+
 ```bash
 export API=http://localhost:9889
 export KEY=$(grep ^reconai_API_KEY .env | cut -d= -f2)
 ```  
+
+Submit a scan:  
 
 ```bash
 ID=$(curl -s -X POST $API/scans \
