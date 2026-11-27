@@ -90,7 +90,7 @@ class Curl(Tool):
             "--connect-timeout", "5",
             "--max-time", str(timeout),
             "--max-filesize", "524288", # 512 KiB response-body limit
-            "--user-agent", "reconai/0.1 (authorized perimeter recon)",
+            "--user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/158.0.0.0 Safari/537.36",
             "--write-out", _WRITE_OUT,
         ]
 
