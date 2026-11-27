@@ -11,6 +11,7 @@ from .arjun import Arjun
 from .curl_tool import Curl
 from .gobuster import Gobuster
 from .httpx_probe import HttpxProbe
+from .katana import Katana
 from .nmap import Nmap
 from .nuclei import Nuclei
 from .testssl import Testssl
@@ -33,6 +34,7 @@ BUILTIN_TOOLS: dict[str, type[Tool]] = {
         Testssl,
         Curl,
         Arjun,
+        Katana,
     )
 }
 
