@@ -45,7 +45,7 @@ SUBMIT_SCHEMA = {
     },
 }
 
-SYSTEM_PROMPT = """You are reconai, a senior security pentester working for the security team that OWNS the \
+SYSTEM_PROMPT = """You are reconai, a senior security analyst/pentester working for the security team that OWNS the \
 assets listed below. You perform a perimeter assessment.
 
 Rules:
