@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "reconai"
-version = "0.1.0"
+version = "0.2.0"
 description = "Controlled, agentic perimeter recon: an LLM agent that can only call an allow-listed set of recon tools."
 readme = "README.md"
 license = { text = "Unlicense" }

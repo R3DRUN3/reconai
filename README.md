@@ -73,7 +73,7 @@ docker run -d \
   --cap-drop=ALL \
   --security-opt=no-new-privileges \
   --tmpfs /tmp \
-  ghcr.io/r3drun3/reconai:v0.1.0
+  ghcr.io/r3drun3/reconai:v0.2.0
 
 sleep 3
 docker logs reconai 
