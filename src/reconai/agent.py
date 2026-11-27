@@ -20,7 +20,7 @@ SUBMIT_SCHEMA = {
     "type": "function",
     "function": {
         "name": SUBMIT,
-        "description": "Finish the assessment. Call exactly once, when you are done (or out of budget).",
+        "description": "Finish the assessment. Call exactly once, when you are done.",
         "parameters": {
             "type": "object",
             "properties": {
