@@ -109,7 +109,7 @@ ID=$(curl -s -X POST $API/scans \
   -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
   -d '{
     "targets": ["exampletarget.com"],
-    "tools": ["nuclei", "gobuster", "wpscan", "wafw00f", "whatweb", "httpx", "testssl", "curl"],
+    "tools": ["nuclei", "gobuster", "wpscan", "wafw00f", "whatweb", "httpx", "testssl", "curl", "arjun"],
     "objective": "Light perimeter check: open ports, web technology, exposed files or directories, obvious misconfigurations and vulnerabilities",
     "max_steps": 30,
     "metadata": {"note": "first PoC test"}

@@ -1,3 +1,4 @@
+
 """Tool registry. Register new tools in BUILTIN_TOOLS."""
 from __future__ import annotations
 
@@ -6,6 +7,7 @@ import shutil
 
 from ..config import Settings
 from .base import Tool, ToolArgError  # noqa: F401
+from .arjun import Arjun
 from .curl_tool import Curl
 from .gobuster import Gobuster
 from .httpx_probe import HttpxProbe
@@ -30,6 +32,7 @@ BUILTIN_TOOLS: dict[str, type[Tool]] = {
         Wafw00f,
         Testssl,
         Curl,
+        Arjun,
     )
 }
 
@@ -59,26 +62,40 @@ def build_registry(
     available: dict[str, type[Tool]] | None = None,
     check_binaries: bool = True,
 ) -> Registry:
-    """Instantiate the tools enabled via RECONAI_TOOLS (fails fast on unknown names).
+    """Instantiate tools enabled via RECONAI_TOOLS.
 
-    A tool whose binary is missing or whose preflight() fails is skipped with a warning.
+    A tool whose binary is missing or whose preflight() fails
+    is skipped with a warning.
     """
     available = available or BUILTIN_TOOLS
-    unknown = [n for n in settings.enabled_tools if n not in available]
+
+    unknown = [
+        n for n in settings.enabled_tools
+        if n not in available
+    ]
+
     if unknown:
         raise ValueError(
-            f"Unknown tool(s) in RECONAI_TOOLS: {unknown}. Available: {sorted(available)}"
+            f"Unknown tool(s) in RECONAI_TOOLS: {unknown}. "
+            f"Available: {sorted(available)}"
         )
 
     tools: list[Tool] = []
+
     for n in settings.enabled_tools:
         tool = available[n](settings)
+
         if check_binaries:
             if shutil.which(tool.binary) is None:
-                log.warning("Tool %r disabled: binary %r not found in PATH", n, tool.binary)
+                log.warning(
+                    "Tool %r disabled: binary %r not found in PATH",
+                    n,
+                    tool.binary,
+                )
                 continue
 
             problem = tool.preflight()
+
             if problem:
                 log.warning("Tool %r disabled: %s", n, problem)
                 continue
@@ -86,6 +103,9 @@ def build_registry(
         tools.append(tool)
 
     if not tools:
-        raise ValueError("No usable tools. Check RECONAI_TOOLS and that the binaries are installed.")
+        raise ValueError(
+            "No usable tools. Check RECONAI_TOOLS and that "
+            "the binaries are installed."
+        )
 
     return Registry(tools)
